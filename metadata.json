@@ -1,0 +1,8 @@
+{
+  "name": "GitMigrate: GitHub Repository Migration Platform",
+  "description": "Production-ready platform to safely discover and migrate all public GitHub repositories, Git commit history, branches, tags, and metadata to a new authorized account.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
