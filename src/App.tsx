@@ -18,6 +18,7 @@ import {
   RepoMappingConfig,
   MigrationJob,
   MigrationLogEntry,
+  GitDiagnostics,
 } from './types';
 
 export default function App() {
@@ -40,7 +41,9 @@ export default function App() {
   const [isRepoManagerOpen, setIsRepoManagerOpen] = useState(false);
   const [isUpdateKeyOpen, setIsUpdateKeyOpen] = useState(false);
 
-  // 1. Initial destination session check
+  const [gitHealth, setGitHealth] = useState<GitDiagnostics | null>(null);
+
+  // 1. Initial destination session & Git environment check
   const refreshDestinationSession = useCallback(async () => {
     try {
       const res = await fetch('/api/auth/session');
@@ -52,6 +55,18 @@ export default function App() {
       }
     } catch {
       setDestinationUser(null);
+    }
+
+    try {
+      const healthRes = await fetch('/api/health');
+      if (healthRes.ok) {
+        const healthData = await healthRes.json();
+        if (healthData.git) {
+          setGitHealth(healthData.git);
+        }
+      }
+    } catch {
+      // Non-fatal health fetch failure
     }
   }, []);
 
@@ -274,6 +289,7 @@ export default function App() {
         currentStep={currentStep}
         onStepClick={setCurrentStep}
         destinationUser={destinationUser}
+        gitHealth={gitHealth}
         onLogout={handleLogout}
         onOpenHistory={() => setIsHistoryOpen(true)}
         onOpenDocs={() => setIsDocsOpen(true)}

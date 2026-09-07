@@ -1,11 +1,12 @@
 import React from 'react';
-import { GitBranch, ShieldCheck, History, BookOpen, LogOut, CheckCircle2, User, Key, FolderGit2, Trash2 } from 'lucide-react';
-import { MigrationStep, DestinationUser } from '../types';
+import { GitBranch, ShieldCheck, History, BookOpen, LogOut, CheckCircle2, User, Key, FolderGit2, Trash2, Cpu, AlertCircle } from 'lucide-react';
+import { MigrationStep, DestinationUser, GitDiagnostics } from '../types';
 
 interface HeaderProps {
   currentStep: MigrationStep;
   onStepClick: (step: MigrationStep) => void;
   destinationUser: DestinationUser | null;
+  gitHealth?: GitDiagnostics | null;
   onLogout: () => void;
   onOpenHistory: () => void;
   onOpenDocs: () => void;
@@ -27,6 +28,7 @@ export const Header: React.FC<HeaderProps> = ({
   currentStep,
   onStepClick,
   destinationUser,
+  gitHealth,
   onLogout,
   onOpenHistory,
   onOpenDocs,
@@ -37,20 +39,40 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <header className="sticky top-0 z-40 border-b border-[#1A1A1A] bg-[#0A0A0A]/95 backdrop-blur-md">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6">
-        {/* Brand */}
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#F27D26] text-black shadow-lg shadow-[#F27D26]/25 font-black">
-            <GitBranch className="h-5 w-5 stroke-[2.5]" />
+        {/* Brand & Git Health */}
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#F27D26] text-black shadow-lg shadow-[#F27D26]/25 font-black">
+              <GitBranch className="h-5 w-5 stroke-[2.5]" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-xl font-black tracking-tighter uppercase text-white">GitMigrate</span>
+                <span className="rounded bg-[#161616] px-2 py-0.5 text-[9px] font-black uppercase tracking-[0.2em] text-[#F27D26] border border-[#2A2A2A]">
+                  Public Mirror
+                </span>
+              </div>
+              <p className="text-[10px] uppercase tracking-[0.2em] font-semibold text-white/40">Zero-credential migration engine</p>
+            </div>
           </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="text-xl font-black tracking-tighter uppercase text-white">GitMigrate</span>
-              <span className="rounded bg-[#161616] px-2 py-0.5 text-[9px] font-black uppercase tracking-[0.2em] text-[#F27D26] border border-[#2A2A2A]">
-                Public Mirror
+
+          {/* Public Git Engine Health Indicator */}
+          {gitHealth && (
+            <div
+              title={gitHealth.available ? `Git Binary: ${gitHealth.binaryPath || '/usr/bin/git'} (${gitHealth.version})` : gitHealth.errorMessage || 'Git Binary Missing'}
+              className={`hidden md:flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider border transition ${
+                gitHealth.available
+                  ? 'border-emerald-900/60 bg-emerald-950/40 text-emerald-400'
+                  : 'border-red-900/60 bg-red-950/40 text-red-400'
+              }`}
+            >
+              <span className={`h-1.5 w-1.5 rounded-full ${gitHealth.available ? 'bg-emerald-400 animate-pulse' : 'bg-red-400'}`} />
+              <Cpu className="h-3 w-3" />
+              <span>
+                {gitHealth.available ? `Git Engine (${gitHealth.version ? gitHealth.version.replace('git version ', 'v') : 'Online'})` : 'Git Engine Offline'}
               </span>
             </div>
-            <p className="text-[10px] uppercase tracking-[0.2em] font-semibold text-white/40">Zero-credential migration engine</p>
-          </div>
+          )}
         </div>
 
         {/* Stepper (Desktop) */}
