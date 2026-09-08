@@ -1,5 +1,6 @@
-# GitMigrate
+![GitMigrate - GitHub Repository Migration Platform](https://github.com/mzainulabideendev/GitMigrate/blob/main/GitMigrate_%20GitHub%20Repository%20Migration%20Platform.jpg)
 
+# GitMigrate
 ## GitHub Public Repository Migration Platform
 
 GitMigrate is a full-stack repository migration platform designed to transfer public GitHub repositories from one GitHub account to another while preserving Git history and repository structure.
